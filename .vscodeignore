@@ -1,0 +1,15 @@
+.vscode/**
+.vscode-test/**
+src/**
+test/**
+node_modules/**
+*.mjs
+tsconfig.json
+package-lock.json
+dist/test/**
+dist/*.map
+test-results/**
+playwright-report/**
+.gitignore
+.github/**
+playwright.config.ts

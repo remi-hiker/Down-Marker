@@ -1,0 +1,195 @@
+{
+  "name": "down-marker",
+  "version": "0.1.0",
+  "description": "Kindle-style highlights and notes for Jupyter code cells and rendered Markdown.",
+  "main": "./dist/extension.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "esbuild test/model.test.ts --bundle --platform=node --outfile=dist/test/model.test.cjs && node --test dist/test/model.test.cjs",
+    "test:browser": "playwright test",
+    "test:host": "node test/run-host.mjs",
+    "package": "vsce package --no-dependencies"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/remi-hiker/Down-Marker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/remi-hiker/Down-Marker/issues"
+  },
+  "homepage": "https://github.com/remi-hiker/Down-Marker#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@types/markdown-it": "^14.2.0",
+    "@types/node": "^26.6.5",
+    "@types/vscode": "1.100.0",
+    "@types/vscode-notebook-renderer": "^1.72.4",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^4.0.0",
+    "esbuild": "^0.28.2",
+    "markdown-it": "^15.0.3",
+    "typescript": "^7.0.2"
+  },
+  "displayName": "Down Marker — Notebook Highlights & Notes",
+  "publisher": "remi-hiker",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Notebooks",
+    "Other"
+  ],
+  "activationEvents": [
+    "onNotebook:jupyter-notebook",
+    "onRenderer:down-marker.markdown"
+  ],
+  "extensionDependencies": [
+    "vscode.markdown-language-features"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": true
+    },
+    "virtualWorkspaces": true
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "downMarker.highlight",
+        "title": "Highlight selection",
+        "category": "Down Marker",
+        "icon": "$(book)"
+      },
+      {
+        "command": "downMarker.highlightColor",
+        "title": "Highlight selection with colour…",
+        "category": "Down Marker",
+        "icon": "$(book)"
+      },
+      {
+        "command": "downMarker.addNote",
+        "title": "Add note to selection",
+        "category": "Down Marker",
+        "icon": "$(book)"
+      },
+      {
+        "command": "downMarker.removeHighlight",
+        "title": "Remove highlight at selection",
+        "category": "Down Marker",
+        "icon": "$(book)"
+      },
+      {
+        "command": "downMarker.showAnnotations",
+        "title": "Show highlights & notes",
+        "category": "Down Marker",
+        "icon": "$(book)"
+      },
+      {
+        "command": "downMarker.export",
+        "title": "Export annotations as Markdown",
+        "category": "Down Marker",
+        "icon": "$(book)"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "downMarker.highlight",
+          "when": "resourceScheme == vscode-notebook-cell",
+          "group": "downMarker@0"
+        },
+        {
+          "command": "downMarker.highlightColor",
+          "when": "resourceScheme == vscode-notebook-cell",
+          "group": "downMarker@1"
+        },
+        {
+          "command": "downMarker.addNote",
+          "when": "resourceScheme == vscode-notebook-cell",
+          "group": "downMarker@2"
+        },
+        {
+          "command": "downMarker.removeHighlight",
+          "when": "resourceScheme == vscode-notebook-cell",
+          "group": "downMarker@3"
+        }
+      ],
+      "notebook/toolbar": [
+        {
+          "command": "downMarker.showAnnotations",
+          "when": "notebookType == jupyter-notebook",
+          "group": "navigation@20"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "downMarker.highlight",
+        "key": "ctrl+alt+h",
+        "mac": "cmd+alt+h",
+        "when": "editorTextFocus && editorHasSelection && resourceScheme == vscode-notebook-cell"
+      },
+      {
+        "command": "downMarker.addNote",
+        "key": "ctrl+alt+n",
+        "mac": "cmd+alt+n",
+        "when": "editorTextFocus && editorHasSelection && resourceScheme == vscode-notebook-cell"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "downMarker",
+          "title": "Down Marker",
+          "icon": "media/marker.svg"
+        }
+      ]
+    },
+    "views": {
+      "downMarker": [
+        {
+          "id": "downMarker.annotations",
+          "name": "Annotations",
+          "type": "webview"
+        }
+      ]
+    },
+    "notebookRenderer": [
+      {
+        "id": "down-marker.markdown",
+        "displayName": "Down Marker Markdown annotations",
+        "entrypoint": {
+          "extends": "vscode.markdown-it-renderer",
+          "path": "./dist/renderer.js"
+        },
+        "requiresMessaging": "always"
+      }
+    ],
+    "configuration": {
+      "title": "Down Marker",
+      "properties": {
+        "downMarker.defaultColor": {
+          "type": "string",
+          "enum": [
+            "yellow",
+            "green",
+            "blue",
+            "pink"
+          ],
+          "default": "yellow",
+          "description": "Default colour for highlighting notebook source selections."
+        }
+      }
+    }
+  }
+}
